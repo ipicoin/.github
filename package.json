@@ -1,0 +1,18 @@
+{
+  "name": "manifest.ipi.io",
+  "version": "1.0.0",
+  "description": "Independent Protocol Infrastructure of Decentralized autonomous organizations federation unions",
+  "homepage": "https://ipi.io/",
+  "bugs": {
+    "url": "https://github.com/ipicoin/.github/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipicoin/.github.git"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "task"
+  }
+}
