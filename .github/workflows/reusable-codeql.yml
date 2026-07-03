@@ -1,0 +1,78 @@
+name: Reusable CodeQL
+
+# Reusable CodeQL security scan for IPI org repositories.
+# Modelled on ipicoin/protocolix/.github/workflows/codeql.yml, adapted to
+# workflow_call so consuming repos can run it with their own language set.
+#
+# Usage (from a consuming repo):
+#   jobs:
+#     codeql:
+#       uses: ipicoin/.github/.github/workflows/reusable-codeql.yml@main
+#       with:
+#         languages: '["javascript-typescript","python"]'
+#       permissions:
+#         security-events: write
+#         packages: read
+#         actions: read
+#         contents: read
+
+on:
+  workflow_call:
+    inputs:
+      languages:
+        description: >-
+          JSON array of CodeQL languages to analyze. Supported values:
+          'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin',
+          'javascript-typescript', 'python', 'ruby', 'rust', 'swift'.
+        type: string
+        default: '["javascript-typescript"]'
+        required: false
+      build-mode:
+        description: "CodeQL build mode: 'none', 'autobuild' or 'manual'."
+        type: string
+        default: "none"
+        required: false
+      queries:
+        description: "Optional query suite(s), e.g. 'security-extended,security-and-quality'."
+        type: string
+        default: ""
+        required: false
+
+permissions:
+  security-events: write
+  packages: read
+  actions: read
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ${{ fromJSON(inputs.languages) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ inputs.build-mode }}
+          queries: ${{ inputs.queries }}
+
+      - name: Autobuild
+        if: inputs.build-mode == 'autobuild'
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"

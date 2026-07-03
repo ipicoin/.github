@@ -1,0 +1,39 @@
+name: CI
+
+# Starter workflow for IPI org repositories.
+# It delegates build/test/lint and security scanning to the org-wide reusable
+# workflows in ipicoin/.github. Adjust the `with:` inputs to match your repo.
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: Build & Test
+    uses: ipicoin/.github/.github/workflows/reusable-ci.yml@main
+
+  codeql:
+    name: CodeQL
+    uses: ipicoin/.github/.github/workflows/reusable-codeql.yml@main
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    with:
+      languages: '["javascript-typescript"]'
+
+  security:
+    name: Security
+    uses: ipicoin/.github/.github/workflows/reusable-security.yml@main
+    with:
+      enable-dependency-review: true
+      enable-secret-scan: true
+      enable-sonar: false

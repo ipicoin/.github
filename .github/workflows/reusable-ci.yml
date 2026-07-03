@@ -1,0 +1,186 @@
+name: Reusable CI
+
+# Reusable build + test + lint workflow for IPI org repositories.
+# Language jobs run conditionally based on the presence of a manifest file
+# (package.json, requirements.txt/pyproject.toml, go.mod, Cargo.toml).
+#
+# Usage (from a consuming repo):
+#   jobs:
+#     ci:
+#       uses: ipicoin/.github/.github/workflows/reusable-ci.yml@main
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version to use for the Node job."
+        type: string
+        default: "20"
+        required: false
+      python-version:
+        description: "Python version to use for the Python job."
+        type: string
+        default: "3.12"
+        required: false
+      go-version:
+        description: "Go version to use for the Go job."
+        type: string
+        default: "1.22"
+        required: false
+      rust-toolchain:
+        description: "Rust toolchain to use for the Rust job."
+        type: string
+        default: "stable"
+        required: false
+      working-directory:
+        description: "Directory to run the build/test commands in."
+        type: string
+        default: "."
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    name: Detect languages
+    runs-on: ubuntu-latest
+    outputs:
+      node: ${{ steps.check.outputs.node }}
+      python: ${{ steps.check.outputs.python }}
+      go: ${{ steps.check.outputs.go }}
+      rust: ${{ steps.check.outputs.rust }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for manifests
+        id: check
+        working-directory: ${{ inputs.working-directory }}
+        shell: bash
+        run: |
+          has() { if compgen -G "$1" > /dev/null; then echo "true"; else echo "false"; fi; }
+          {
+            echo "node=$( [ -f package.json ] && echo true || echo false )"
+            echo "python=$( { [ -f requirements.txt ] || [ -f pyproject.toml ] || [ -f setup.py ]; } && echo true || echo false )"
+            echo "go=$( [ -f go.mod ] && echo true || echo false )"
+            echo "rust=$( [ -f Cargo.toml ] && echo true || echo false )"
+          } >> "$GITHUB_OUTPUT"
+
+  node:
+    name: Node build & test
+    needs: detect
+    if: needs.detect.outputs.node == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        run: npm test --if-present
+
+  python:
+    name: Python build & test
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ] || [ -f setup.py ]; then pip install -e . || true; fi
+          pip install ruff pytest
+
+      - name: Lint (ruff)
+        run: ruff check . || true
+
+      - name: Test (pytest)
+        shell: bash
+        run: |
+          if ls tests test 2>/dev/null || compgen -G "test_*.py" > /dev/null; then
+            pytest
+          else
+            echo "No tests found, skipping."
+          fi
+
+  go:
+    name: Go build & test
+    needs: detect
+    if: needs.detect.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test ./...
+
+  rust:
+    name: Rust build & test
+    needs: detect
+    if: needs.detect.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        run: rustup toolchain install ${{ inputs.rust-toolchain }} --profile minimal --component clippy && rustup default ${{ inputs.rust-toolchain }}
+
+      - name: Lint (clippy)
+        run: cargo clippy --all-targets --all-features || true
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Test
+        run: cargo test --verbose

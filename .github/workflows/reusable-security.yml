@@ -1,0 +1,114 @@
+name: Reusable Security
+
+# Reusable security workflow for IPI org repositories:
+#   - Dependency review (PR-only, native GitHub action)
+#   - Secret scanning with gitleaks
+#   - Optional SonarCloud analysis (modelled on ipicoin/protocolix sonarcloud.yml)
+#
+# Usage (from a consuming repo):
+#   jobs:
+#     security:
+#       uses: ipicoin/.github/.github/workflows/reusable-security.yml@main
+#       with:
+#         enable-sonar: true
+#         sonar-project-key: my-project
+#         sonar-organization: ipicoin
+#       secrets:
+#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+on:
+  workflow_call:
+    inputs:
+      enable-dependency-review:
+        description: "Run dependency review (only effective on pull_request events)."
+        type: boolean
+        default: true
+        required: false
+      enable-secret-scan:
+        description: "Run gitleaks secret scanning."
+        type: boolean
+        default: true
+        required: false
+      enable-sonar:
+        description: "Run SonarCloud analysis (requires SONAR_TOKEN secret)."
+        type: boolean
+        default: false
+        required: false
+      sonar-project-key:
+        description: "SonarCloud project key."
+        type: string
+        default: ""
+        required: false
+      sonar-organization:
+        description: "SonarCloud organization key."
+        type: string
+        default: ""
+        required: false
+    secrets:
+      SONAR_TOKEN:
+        description: "SonarCloud token. Required when enable-sonar is true."
+        required: false
+      GITLEAKS_LICENSE:
+        description: "Optional gitleaks license (only for gitleaks-action org use)."
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    if: inputs.enable-dependency-review && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          comment-summary-in-pr: on-failure
+
+  secret-scan:
+    name: Secret scan (gitleaks)
+    if: inputs.enable-secret-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  sonarcloud:
+    name: SonarCloud analysis
+    if: inputs.enable-sonar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ inputs.sonar-project-key }}
+            -Dsonar.organization=${{ inputs.sonar-organization }}
+          projectBaseDir: .

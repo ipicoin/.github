@@ -1,0 +1,16 @@
+{
+  "name": "IPI CI/CD + Security",
+  "description": "Org-wide build, test, lint, CodeQL and security scanning via ipicoin/.github reusable workflows.",
+  "iconName": "shield-check",
+  "categories": [
+    "Continuous integration",
+    "Security"
+  ],
+  "filePatterns": [
+    "package.json$",
+    "go.mod$",
+    "Cargo.toml$",
+    "requirements.txt$",
+    "pyproject.toml$"
+  ]
+}
