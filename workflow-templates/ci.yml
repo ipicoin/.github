@@ -33,6 +33,13 @@ jobs:
   security:
     name: Security
     uses: ipicoin/.github/.github/workflows/reusable-security.yml@main
+    # A called reusable workflow cannot be granted more than the caller's job
+    # permissions. Without pull-requests: write here, the dependency-review job
+    # inside reusable-security.yml is capped by the workflow-level contents: read
+    # and fails with 403 when it tries to comment on the PR.
+    permissions:
+      contents: read
+      pull-requests: write
     with:
       enable-dependency-review: true
       enable-secret-scan: true

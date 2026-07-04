@@ -47,7 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       node: ${{ steps.check.outputs.node }}
+      node_lock: ${{ steps.check.outputs.node_lock }}
       python: ${{ steps.check.outputs.python }}
+      pip_lock: ${{ steps.check.outputs.pip_lock }}
       go: ${{ steps.check.outputs.go }}
       rust: ${{ steps.check.outputs.rust }}
     steps:
@@ -59,10 +61,15 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         shell: bash
         run: |
-          has() { if compgen -G "$1" > /dev/null; then echo "true"; else echo "false"; fi; }
+          # node_lock / pip_lock gate the setup-*/cache feature: enabling cache
+          # without a matching lockfile makes actions/setup-node|setup-python
+          # fail hard ("Dependencies lock file is not found"). We only turn cache
+          # on when a lockfile actually exists in the working directory.
           {
             echo "node=$( [ -f package.json ] && echo true || echo false )"
+            echo "node_lock=$( { [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ] || [ -f yarn.lock ]; } && echo true || echo false )"
             echo "python=$( { [ -f requirements.txt ] || [ -f pyproject.toml ] || [ -f setup.py ]; } && echo true || echo false )"
+            echo "pip_lock=$( [ -f requirements.txt ] && echo true || echo false )"
             echo "go=$( [ -f go.mod ] && echo true || echo false )"
             echo "rust=$( [ -f Cargo.toml ] && echo true || echo false )"
           } >> "$GITHUB_OUTPUT"
@@ -83,7 +90,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: npm
+          # Only enable npm caching when a lockfile exists; otherwise setup-node
+          # errors out ("Dependencies lock file is not found") on repos that have
+          # a package.json but no committed lock file.
+          cache: ${{ needs.detect.outputs.node_lock == 'true' && 'npm' || '' }}
+          cache-dependency-path: ${{ needs.detect.outputs.node_lock == 'true' && '**/package-lock.json' || '' }}
 
       - name: Install dependencies
         run: npm ci || npm install
@@ -113,7 +124,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
-          cache: pip
+          # Only enable pip caching when requirements.txt exists; setup-python
+          # pip cache fails if no matching dependency file is found.
+          cache: ${{ needs.detect.outputs.pip_lock == 'true' && 'pip' || '' }}
+          cache-dependency-path: ${{ needs.detect.outputs.pip_lock == 'true' && '**/requirements.txt' || '' }}
 
       - name: Install dependencies
         shell: bash
@@ -124,7 +138,7 @@ jobs:
           pip install ruff pytest
 
       - name: Lint (ruff)
-        run: ruff check . || true
+        run: ruff check .
 
       - name: Test (pytest)
         shell: bash
@@ -177,7 +191,7 @@ jobs:
         run: rustup toolchain install ${{ inputs.rust-toolchain }} --profile minimal --component clippy && rustup default ${{ inputs.rust-toolchain }}
 
       - name: Lint (clippy)
-        run: cargo clippy --all-targets --all-features || true
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Build
         run: cargo build --verbose
