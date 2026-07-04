@@ -31,6 +31,8 @@ Rejestracja i logowanie do interfejsów web (portal wallet, panel DAO) w oparciu
 - **Passkeys** (rezydentne poświadczenia synchronizowane) dla wygody kont konsumenckich; **klucze sprzętowe** (Yubikey jako authenticator WebAuthn/FIDO2) dla kont wysokiego ryzyka.
 - Weryfikacja `attestation` przy rejestracji kluczy sprzętowych pozwala wymusić politykę autoryzowanych urządzeń dla ról administracyjnych DAO.
 
+> **Uwaga (patrz §2e).** WebAuthn nadaje się do **logowania web** (origin-bound challenge). Użycie WebAuthn do **podpisu transakcji on-chain e2e** nie jest transparentne: authenticator podpisuje `authenticatorData || SHA256(clientDataJSON)`, a **nie** surowy `SignDoc` transakcji Cosmos. E2e podpis wymaga modułu chain-side, który zrekonstruuje i zweryfikuje ten payload (§2e) — sam wallet nie zamyka tej ścieżki.
+
 ### (b) Yubikey PIV — sprzętowy podpis transakcji
 
 Dla operacji o wysokiej wartości (podpis transakcji on-chain, autoryzacja propozycji DAO) używamy apletu **PIV** Yubikey, obsługiwanego przez forki org:
@@ -43,6 +45,8 @@ Model:
 - Klucz prywatny transakcji generowany **w slocie PIV** (np. `9c` / Digital Signature); nie da się go wyeksportować.
 - Podpis transakcji IPI wymaga fizycznej obecności klucza + PIN PIV (dwa czynniki: posiadanie + wiedza).
 - Klucz publiczny ze slotu jest mapowany na adres IPI (patrz §2d), więc podpis PIV = podpis transakcji z danego adresu.
+
+> **Uwaga (krytyczna, patrz §2e).** Aplet PIV YubiKey podpisuje krzywą **P-256 (secp256r1)**, a nie **secp256k1** używaną domyślnie przez Cosmos SDK. Sam portfel z YubiKey PIV **nie wystarczy** — łańcuch musi obsłużyć niestandardowy typ klucza publicznego (`secp256r1`) i weryfikować taki podpis. To zakres chain-side (§2e), nie samego walleta.
 
 ### (c) NTAG424 DNA — karty NFC (prepaid / event)
 
@@ -73,6 +77,37 @@ Wszystkie warstwy zbiegają się w jednej tożsamości:
                         └───────────────┴──────────────┴──────────────┘
 ```
 
+### (e) Wymagania chain-side (KRYTYCZNE — bez tego wallet sam nie wystarczy)
+
+Kluczowe ograniczenie fundamentowe: **WebAuthn i YubiKey PIV nie dają samodzielnie podpisu transakcji on-chain akceptowanego przez łańcuch IPI.** Oba mechanizmy wymagają wsparcia po stronie łańcucha (`independency-daemon`), którego dziś nie ma. Ten dokument nie obiecuje, że sam wallet zamknie ścieżkę e2e — poniższe pozycje to jawny zakres Fali 0/1.
+
+**1. Niedopasowanie krzywej (PIV).** Aplet PIV YubiKey operuje na krzywej **P-256 = secp256r1** (NIST). Cosmos SDK domyślnie weryfikuje **secp256k1** (i ed25519 dla walidatorów). Podpis ze slotu PIV `9c` jest więc **nie do zweryfikowania** przez standardowy AnteHandler bez rozszerzenia.
+
+**2. Format podpisu WebAuthn ≠ SignDoc.** Authenticator WebAuthn/FIDO2 nie podpisuje surowego `SignDoc` (ani `SIGN_MODE_DIRECT` bytes, ani amino). Podpisuje konkatenację:
+
+```text
+signature = Sign( authenticatorData || SHA256(clientDataJSON) )
+```
+
+gdzie `challenge` transakcji jest osadzone wewnątrz `clientDataJSON`. Łańcuch, aby zweryfikować taki podpis, musi:
+- odtworzyć `clientDataJSON` (z osadzonym challenge = hash SignDoc),
+- policzyć `SHA256(clientDataJSON)`,
+- złożyć `authenticatorData || SHA256(clientDataJSON)`,
+- zweryfikować podpis P-256 nad tą wartością.
+
+Standardowy verifier Cosmos tego nie robi — dostaje surowy podpis i surowy SignDoc.
+
+**3. Wymagany moduł w `independency-daemon`.** Aby oba czynniki działały e2e, w daemonie trzeba wdrożyć:
+- **Custom pubkey type** `secp256r1` (własny typ w `cryptotypes.PubKey`, rejestracja w codec/interface registry) — obsługa krzywej P-256.
+- **Verifier / AnteHandler** rozpoznający sygnaturę P-256 oraz — dla ścieżki WebAuthn — dekodujący i rekonstruujący payload `authenticatorData || SHA256(clientDataJSON)` przed weryfikacją (analogicznie do rozwiązań typu WebAuthn-on-chain / EIP-7212 w innych ekosystemach).
+- Ewentualnie osobny **SignMode** / dekorator ante dla transakcji podpisanych sprzętowo.
+
+Bez tych elementów `PivSigner` / `WebAuthnSigner` z §3 (wallet-core.js) produkują podpisy, których **łańcuch odrzuci**.
+
+**4. NTAG424 — poza tym ograniczeniem (kryptografia symetryczna, poprawnie).** Warstwa NTAG424 (§2c) opiera się o **AES-128 / CMAC (symetryczne)** i **nie** jest podpisem transakcji on-chain. Autoryzacja SUN/CMAC jest weryfikowana po stronie backendu/terminala, a rozliczenie on-chain podpisywane jest osobno asymetrycznym kluczem portfela. NTAG424 nie wymaga zmian w łańcuchu i tu żadnej rozbieżności krzywych nie ma.
+
+**Zakres.** Punkty 1–3 są warunkiem koniecznym dla „hardware-key signing" i muszą trafić do zakresu **Fali 0/1** (moduł chain-side), zanim `wallet-core.js` (Fala 2) będzie mógł realnie delegować podpis do YubiKey/WebAuthn. Do czasu ich wdrożenia dokument traktuje e2e podpis WebAuthn/PIV jako **niewykonalny samym walletem**.
+
 ## 3. Integracja z ekosystemem
 
 ### wallet-core.js (Fala 2 — hardware-key signing)
@@ -80,6 +115,7 @@ Wszystkie warstwy zbiegają się w jednej tożsamości:
 - `wallet-core.js` deleguje podpis transakcji do warstwy sprzętowej zamiast trzymać klucz w pamięci procesu.
 - Punkt integracji: adapter podpisu wołający `yubikey-piv-node` (slot PIV) lub authenticator WebAuthn; wynik to podpis akceptowany przez łańcuch IPI.
 - Wymaganie dla Fali 2: interfejs `signer` z implementacjami `PivSigner` / `WebAuthnSigner`, tak by portfel nie znał materiału klucza.
+- **Zależność blokująca:** `PivSigner` / `WebAuthnSigner` mają sens dopiero po wdrożeniu modułu chain-side (§2e — custom pubkey `secp256r1` + verifier/AnteHandler). Bez niego łańcuch odrzuci produkowane podpisy; Fala 2 nie jest samowystarczalna po stronie walleta.
 
 ### cheers-protocol (Fala 4 — prepaid RFID / 3DS)
 
