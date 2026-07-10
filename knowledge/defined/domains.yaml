@@ -1,0 +1,35 @@
+# ipi.io:
+#   aliases: ['www.ipi.io']
+#   - service: http_hosting
+#     ports: [80, 443]
+#     about: static wellcome page
+
+# scan.ipi.io:
+#   aliases: []
+#   - service: http_hosting
+#     ports: [80, 443]
+#     # about: ...
+
+# blog.ipi.io:
+#   aliases: []
+#   - service: http_hosting
+#     ports: [80, 443]
+#     about: own selfhosted blog publishing
+
+# ipicoin.pl:
+#   aliases: []
+#     - service: http_hosting
+#       ports: [80, 443]
+#       # about: ...
+  
+# ipicoin.eu:
+#   aliases: []
+#   - service: http_hosting
+#     ports: [80, 443]
+#     # about: ...
+
+# ipicoin.github.io:
+#   aliases: []
+#   - service: http_hosting
+#     ports: [80, 443]
+#     # about: ...
