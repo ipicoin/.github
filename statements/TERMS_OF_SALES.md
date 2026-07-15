@@ -11,7 +11,12 @@ IPI Coin is issued and managed by IPI.IO LLC, located at Suite 100, Erie, PA 165
 
 #### 3. Nature of IPI Coin
 
-IPI Coin is a cryptocurrency native to the IPI blockchain, utilizing a Proof of Network consensus mechanism. It is designed for high scalability, supporting unlimited transactions per second (TPS) and WASM-based smart contracts, enabling development in multiple programming languages.
+At the time this historical document was drafted, IPI Coin was described as a
+cryptocurrency for a proposed IPI blockchain with WebAssembly smart-contract
+support. This preserved description is not evidence of a current network,
+consensus implementation, throughput level, legal status, or production
+service. Current technical claims require reproducible public evidence and a
+reviewed specification.
 
 #### 4. Coin Supply and Distribution
 

@@ -38,7 +38,7 @@ accepted proposal.
 ## Contributing a proposal
 
 1. Start a focused
-   [GitHub Discussion](https://github.com/orgs/ipicoin/discussions) describing
+   [GitHub Discussion](https://github.com/ipicoin/.github/discussions) describing
    the problem, constraints, and alternatives.
 2. Establish that an IPI is the right level of change and identify affected
    maintainers.
