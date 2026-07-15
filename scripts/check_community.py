@@ -20,14 +20,19 @@ REQUIRED_FILES = [
     "MAINTAINERS.md",
     "ROADMAP.md",
     "LICENSING.md",
+    "LICENSE",
+    "NOTICE",
+    "TRADEMARKS.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
     "ipi/README.md",
+    "ipi/LICENSE",
     "ipi/IPI-0000.md",
     "ipi/IPI-0001.md",
     "ipi/IPI-template.md",
+    "statements/README.md",
 ]
 
 CLAIM_SURFACE = [
