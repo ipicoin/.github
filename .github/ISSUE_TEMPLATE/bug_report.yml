@@ -1,0 +1,84 @@
+name: Bug report
+description: Report a reproducible defect in an IPI component
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve IPI. Search existing reports first.
+        Do not report vulnerabilities here; use the private Security process.
+
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Repository, package, application, module, or endpoint
+      placeholder: ipicoin/repository — component
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release, commit SHA, build identifier, or network identity
+      placeholder: Commit SHA or exact version
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Exact steps, commands, inputs, and configuration with secrets removed
+      placeholder: |
+        1. Start from...
+        2. Run...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, architecture, runtime, dependencies, and relevant network configuration
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs and evidence
+      description: Paste the smallest useful output after removing secrets and personal data
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing issues and Discussions.
+          required: true
+        - label: This report contains no secret, private key, seed phrase, or personal data.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true
