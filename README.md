@@ -23,6 +23,7 @@ Repository-specific instructions always take precedence.
 | [Maintainers](MAINTAINERS.md) | Access, review, and stewardship expectations |
 | [Roadmap](ROADMAP.md) | Milestones and public exit criteria |
 | [Licensing](LICENSING.md) | Licensing and upstream-attribution policy |
+| [Trademarks](TRADEMARKS.md) | Fair use, independent forks, and endorsement rules |
 | [IPI proposals](ipi/README.md) | Protocol and governance proposal process |
 
 ## Proposal naming
@@ -43,9 +44,18 @@ verification evidence.
 
 Files under [statements/](statements/) and [translations/](translations/) are
 preserved separately from the technical and community standards in this
-repository. Their presence does not make them a current protocol specification
-or a substitute for qualified legal review. Changes to those files require an
-explicit legal review process.
+repository. They are excluded from the Apache-2.0 and CC0-1.0 grants and remain
+all rights reserved unless a file says otherwise. Their presence does not make
+them a current protocol specification or a substitute for qualified legal
+review. See [the legal-document notice](statements/README.md) before relying on
+them.
+
+## License
+
+General repository content is Apache-2.0. IPI proposals under `ipi/` are
+CC0-1.0. Historical legal documents are excluded as described above. Names and
+marks are governed by [TRADEMARKS.md](TRADEMARKS.md). See [NOTICE](NOTICE) and
+[LICENSING.md](LICENSING.md) for the exact scope.
 
 ## Historical and incubating material
 
