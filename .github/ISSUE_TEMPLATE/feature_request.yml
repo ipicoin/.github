@@ -1,0 +1,68 @@
+name: Feature request
+description: Propose a bounded improvement grounded in a concrete problem
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem before the solution. Protocol, compatibility,
+        governance, or cross-repository changes may require an IPI proposal.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who is affected, what cannot be done, and what evidence shows the need?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Define observable success without prescribing unnecessary implementation details
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Describe a bounded approach, public interfaces, and relevant constraints
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Include existing workarounds and the option of making no change
+    validations:
+      required: true
+
+  - type: textarea
+    id: independence
+    attributes:
+      label: Independence, security, and operational impact
+      description: Does this add a coordinator, key holder, provider, oracle, service, or other required dependency?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I can help specify this change.
+        - label: I can help implement or test this change.
+        - label: I can help document this change.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing issues, Discussions, and IPI proposals.
+          required: true
+        - label: I described a problem and a verifiable outcome.
+          required: true
