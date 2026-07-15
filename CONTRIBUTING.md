@@ -11,7 +11,7 @@ rewrites.
 ## Choose the right path
 
 - Ask usage and architecture questions in
-  [GitHub Discussions](https://github.com/orgs/ipicoin/discussions).
+  [GitHub Discussions](https://github.com/ipicoin/.github/discussions).
 - Report a reproducible bug in the repository where it occurs.
 - Suggest a bounded enhancement with the feature request template.
 - Use an [IPI Improvement Proposal](ipi/README.md) for protocol behavior,

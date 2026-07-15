@@ -8,7 +8,7 @@ support agreement.
 
 | Need | Channel |
 | --- | --- |
-| Usage or architecture question | [GitHub Discussions](https://github.com/orgs/ipicoin/discussions) |
+| Usage or architecture question | [GitHub Discussions](https://github.com/ipicoin/.github/discussions) |
 | Reproducible software defect | Issue in the affected repository |
 | Protocol or governance change | [IPI Improvement Proposal](ipi/README.md) |
 | Security vulnerability | Private process in [SECURITY.md](SECURITY.md) |
