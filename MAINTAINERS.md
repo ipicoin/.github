@@ -61,6 +61,6 @@ team permissions are the authoritative record. Each active repository should
 add a public maintainer section or CODEOWNERS file once at least two responsible
 reviewers have accepted the role.
 
-General coordination: [GitHub Discussions](https://github.com/orgs/ipicoin/discussions)
+General coordination: [GitHub Discussions](https://github.com/ipicoin/.github/discussions)
 
 Private security or access concern: [hello@ipi.io](mailto:hello@ipi.io)

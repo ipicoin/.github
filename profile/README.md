@@ -67,7 +67,7 @@ The first specification of this model is
 - Propose a protocol change through the
   [IPI process](/ipicoin/.github/tree/main/ipi).
 - Join an architectural or product conversation in
-  [GitHub Discussions](https://github.com/orgs/ipicoin/discussions).
+  [GitHub Discussions](https://github.com/ipicoin/.github/discussions).
 - Find issues marked
   [good first issue](https://github.com/search?q=org%3Aipicoin+label%3A%22good+first+issue%22+is%3Aopen&type=issues)
   or [help wanted](https://github.com/search?q=org%3Aipicoin+label%3A%22help+wanted%22+is%3Aopen&type=issues).
@@ -98,7 +98,7 @@ operate independently. Architecture and governance changes are discussed before
 they are standardized.
 
 [Website](https://ipi.io) ·
-[Discussions](https://github.com/orgs/ipicoin/discussions) ·
+[Discussions](https://github.com/ipicoin/.github/discussions) ·
 [Governance](/ipicoin/.github/blob/main/GOVERNANCE.md) ·
 [IPI proposals](/ipicoin/.github/tree/main/ipi) ·
 [Licensing](/ipicoin/.github/blob/main/LICENSING.md) ·
