@@ -1,7 +1,24 @@
-# IPI Licensing Policy
+# IPI Licensing and Attribution Policy
 
 Open source requires an explicit license. Public visibility alone does not grant
 permission to use, modify, or redistribute a repository.
+
+## Licenses in this repository
+
+- Software, automation, and general community documentation are licensed under
+  [Apache License 2.0](LICENSE).
+- IPI Improvement Proposals and templates under [`ipi/`](ipi/) are dedicated
+  to the public domain under [CC0 1.0 Universal](ipi/LICENSE), so independent
+  implementations can reproduce and implement the specifications.
+- Historical legal documents under [`statements/`](statements/) and
+  [`translations/`](translations/) are excluded from those grants and remain
+  all rights reserved unless a file explicitly states otherwise. See
+  [statements/README.md](statements/README.md).
+- Project names, logos, domains, and other marks are governed separately by
+  [TRADEMARKS.md](TRADEMARKS.md).
+
+The repository [NOTICE](NOTICE) records this scope. A directory-level license
+or notice takes precedence for the material in that directory.
 
 ## Repository requirements
 
@@ -25,11 +42,22 @@ and release notes. A fork must not be presented as original IPI work.
 
 ## Original IPI work
 
-The license for original code and specifications must be selected deliberately
-by the relevant rights holders. Code, protocol specifications, documentation,
-brands, and media may require different licenses. Until those decisions are
-recorded, no automated process should add a blanket license across existing
-repositories.
+The license for original work must be selected deliberately by the relevant
+rights holders. IPI's default for new original software repositories is
+Apache-2.0. The default for new IPI proposals is CC0-1.0. A repository may use
+a different OSI-approved license when compatibility, upstream provenance, or a
+recorded project decision requires it.
+
+Code, specifications, documentation, brands, media, data, and legal documents
+may require different treatment. Automated changes must not overwrite an
+upstream license or relicense existing material without documented authority.
+
+## Contributions
+
+Contributions are submitted under the license that covers the destination
+file or directory. Contributors must have the right to submit their work and
+must preserve third-party attribution. A contribution that cannot meet those
+conditions must not be merged until the rights are resolved.
 
 License questions should be raised publicly as issues unless they contain
-private legal or contributor information.
+private legal, security, or contributor information.

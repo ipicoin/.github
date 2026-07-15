@@ -100,4 +100,6 @@ they are standardized.
 [Website](https://ipi.io) ·
 [Discussions](https://github.com/orgs/ipicoin/discussions) ·
 [Governance](/ipicoin/.github/blob/main/GOVERNANCE.md) ·
-[IPI proposals](/ipicoin/.github/tree/main/ipi)
+[IPI proposals](/ipicoin/.github/tree/main/ipi) ·
+[Licensing](/ipicoin/.github/blob/main/LICENSING.md) ·
+[Trademarks](/ipicoin/.github/blob/main/TRADEMARKS.md)
