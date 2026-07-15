@@ -1,7 +1,8 @@
 {
   "name": "manifest.ipi.io",
   "version": "1.0.0",
-  "description": "Independent Protocol Infrastructure of Decentralized autonomous organizations federation unions",
+  "description": "Community standards and governance for Independent Protocol Infrastructure.",
+  "license": "Apache-2.0",
   "homepage": "https://ipi.io/",
   "bugs": {
     "url": "https://github.com/ipicoin/.github/issues"
