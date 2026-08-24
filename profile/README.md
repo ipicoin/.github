@@ -14,7 +14,7 @@ The repositories are parts of one verification path: protocol state is exposed
 through open interfaces, clients authorize or inspect changes, and governance
 and evidence specifications make control and trust boundaries explicit.
 
-## Engineering evidence
+## Engineering Evidence
 
 | Layer | Publicly verifiable implementation | Strongest evidence | Current role |
 | --- | --- | --- | --- |
@@ -28,7 +28,7 @@ and evidence specifications make control and trust boundaries explicit.
 | Governance and security | Public architecture, security policy, change control, roadmap, and validated IPI Improvement Proposal framework | [`GOVERNANCE.md`](https://github.com/ipicoin/.github/blob/main/GOVERNANCE.md), [`SECURITY.md`](https://github.com/ipicoin/.github/blob/main/SECURITY.md), [`IPI-0000`](https://github.com/ipicoin/.github/blob/main/ipi/IPI-0000.md) | Active public framework |
 | Product identity and hardware keys | Specified boundaries for P-256/R1, WebAuthn, NFC, secure elements, attestation, privacy, and replay protection | [`ARCHITECTURE.md`](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md), [`NTAG 424 reference`](https://github.com/ipicoin/nikeee___node-ntag424) | Hardware-backed identity research direction |
 
-## Project map
+## What Exists Today
 
 | Area | Repository | Current role |
 | --- | --- | --- |
@@ -79,7 +79,7 @@ and checkout/receipt flows can turn settlement into a checkable record. The
 [architecture document](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md)
 separates current implementation from target interfaces in detail.
 
-## More than a token layer
+## More Than a Token Layer
 
 The public organization contains separate repositories for protocol and network
 foundations, wallet software, native mobile projects, explorer code, RPC/API
@@ -121,7 +121,7 @@ fork currently adds provenance documentation and CI hardening rather than an
 IPI consensus or application delta. IPI-specific public evidence is concentrated
 in the explorer, wallet models and tests, governance and architecture, network
 configuration, website, and integration work. See the
-[complete repository audit](../REPOSITORY_AUDIT.md)
+[complete repository audit](https://github.com/ipicoin/.github/blob/main/REPOSITORY_AUDIT.md)
 for the per-repository boundary.
 
 ## Development Status
