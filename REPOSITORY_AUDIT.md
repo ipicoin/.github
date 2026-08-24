@@ -151,13 +151,16 @@ different wording.
 GitHub does not expose organization-profile pin management through the API used
 for this audit. The recommended manual order is:
 
-1. [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io)
-2. [`.github`](https://github.com/ipicoin/.github)
+1. [`.github`](https://github.com/ipicoin/.github)
+2. [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io)
 3. [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js)
 4. [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io)
 5. [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc)
-6. [`independency-daemon`](https://github.com/ipicoin/independency-daemon)
+6. [`chainconfig`](https://github.com/ipicoin/chainconfig)
 
-This order puts original, runnable or tested IPI work first and leaves the
-attributed upstream node foundation visible only after its current status is
-clear.
+This order puts the architecture/evidence index first, followed by original,
+runnable or tested IPI work. `protocolix` is not recommended yet because its
+public application behavior is still the default Capacitor scaffold;
+`independency-daemon` is not recommended because its application code remains
+the upstream `wasmd` foundation. Pinning either today would strengthen the
+wrong first impression despite their intended architectural roles.
