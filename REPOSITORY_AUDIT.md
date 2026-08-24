@@ -25,15 +25,15 @@ This is a presentation and source audit, not a security audit or certification.
 | --- | --- | --- | --- |
 | [`.github`](https://github.com/ipicoin/.github) | Governance, security, contribution policy, architecture, roadmap, IPI proposal process, validation script | Original public standards and evidence model | Active bootstrap process; community validation passes |
 | [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io) | Browser explorer, local API proxy, native Cosmos/CometBFT queries, EVM JSON-RPC diagnostics | Explorer routing, rendering, search, account, validator, block, transaction, and EVM inspection | Active development; syntax checks and public explorer CI pass |
-| [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) | JavaScript models, controllers, wallet-operation scaffolds, seven test files | Wallet/address/request/transaction/contract models and configurable Bech32 validation | 11 tests pass; key import/generation and transfer paths are incomplete or broken and untested; dependency audit blocks CI |
-| [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io) | Astro landing page, small Starlight documentation tree, OpenSpec change record | IPI website and launch/documentation presentation | Static build passes on Node 24; dependency audit currently blocks public CI |
+| [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) | JavaScript models, controllers, wallet-operation scaffolds, seven test files | Wallet/address/request/transaction/contract models and configurable Bech32 validation | 11 tests pass; key import/generation and transfer paths are incomplete or broken and untested; high-severity audit remediation is in [PR #20](https://github.com/ipicoin/wallet-core.js/pull/20) |
+| [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io) | Astro landing page, small Starlight documentation tree, OpenSpec change record | IPI website and launch/documentation presentation | Static build passes on Node 24; dependency audit remediation is in [PR #11](https://github.com/ipicoin/www.ipi.io/pull/11) |
 | [`chainconfig`](https://github.com/ipicoin/chainconfig) | One Cosmos wallet configuration export and one coherence test | Historical IPI chain metadata and Bech32/denomination fields | Test passes; values identify legacy `ipi-mainnet-2`, not a canonical current release |
-| [`protocolix`](https://github.com/ipicoin/protocolix) | Capacitor Android/iOS projects and the default camera/demo web shell | IPI package/bundle identifiers and native project scaffold | Web scaffold builds and native project trees are checked in; no wallet, signing, NFC, or secure-key implementation and no application tests; dependency audit blocks CI |
+| [`protocolix`](https://github.com/ipicoin/protocolix) | Capacitor Android/iOS projects and the default camera/demo web shell | IPI package/bundle identifiers and native project scaffold | Web scaffold builds and native project trees are checked in; no wallet, signing, NFC, or secure-key implementation and no application tests; audit and build CI pass in [PR #11](https://github.com/ipicoin/protocolix/pull/11) |
 | [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc) | Protobuf tree, two generated TypeScript client trees, Next.js comparison pages | Repository packaging and research framing | Upstream-derived integration sandbox; no IPI endpoints or RPC server implementation |
 | [`Iswap`](https://github.com/ipicoin/Iswap) | Hyperweb swap example with Cosmos Kit and Osmosis query dependencies | Status, provenance, and IPI research framing only | Imported sandbox; no IPI configuration, tests, or public CI |
 | [`Ivote`](https://github.com/ipicoin/Ivote) | Hyperweb governance proposal/vote example | Status, provenance, and IPI research framing only | Imported sandbox; no IPI configuration, tests, or public application CI |
 | [`ipi-nft`](https://github.com/ipicoin/ipi-nft) | Hyperweb/Stargaze NFT example with mint, sale, transfer, and burn hooks | Status, provenance, and IPI research framing only | Imported sandbox; no IPI configuration, tests, or public application CI |
-| [`ipicoin.github.io`](https://github.com/ipicoin/ipicoin.github.io) | Default Vue/Vite demo, placeholder counter store, one default Playwright test | Repository naming and legacy presentation only | Build passes; no IPI product behavior and no unit tests; canonical source is `www.ipi.io` |
+| [`ipicoin.github.io`](https://github.com/ipicoin/ipicoin.github.io) | Default Vue/Vite demo, placeholder counter store, one default Playwright test | Repository naming and legacy presentation only | Build passes; no IPI product behavior and no unit tests; canonical source is `www.ipi.io`; audit remediation is in [PR #10](https://github.com/ipicoin/ipicoin.github.io/pull/10) |
 | [`hq-spacecraft`](https://github.com/ipicoin/hq-spacecraft) | Compose include skeleton, one Pi-hole definition, empty service files, placeholder Python/Task commands | Self-hosting research organization and documentation | Prototype skeleton; not a deployable collaboration stack |
 | [`universal-independency-declaration`](https://github.com/ipicoin/universal-independency-declaration) | Empty JavaScript entry, hello-world Python/Rust, language manifests | Link to IPI-0001 research direction | Concept skeleton; no shared API, fixtures, or executable independence checks |
 | [`standard_repo_template`](https://github.com/ipicoin/standard_repo_template) | Repository readiness README, Apache license, empty source/test placeholders | IPI publication and evidence checklist | Documentation template, not an implementation |
@@ -99,9 +99,11 @@ the assessment date. Zero means the fork contains no IPI-specific source change.
   checkout, payment, terminal, or receipt implementation.
 - No public end-to-end EVM or CosmWasm compatibility suite tied to an IPI node
   revision; the explorer demonstrates query integration only.
-- Several active-development JavaScript repositories have dependency audit
-  failures, and some scaffolds advertise test commands without application
-  tests.
+- The assessment found high-severity dependency audit failures in several
+  JavaScript repositories. Lockfile remediation is included in the linked
+  wallet-core, Protocolix, website, and legacy-site PRs; low-severity
+  InterchainJS/Ethers findings remain in wallet-core, and some scaffolds still
+  have no application tests.
 - No public release artifacts exist across the original repositories except one
   historical wallet-core release record; independent reproducibility remains
   unproven.
