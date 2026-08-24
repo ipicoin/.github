@@ -1,105 +1,149 @@
 # IPI Architecture
 
-This document describes the target IPI system and the boundaries contributors
-must preserve. It is not a claim that every component is complete or public.
-Current maturity is recorded separately from the target architecture.
+IPI is designed as a multi-layer protocol infrastructure ecosystem. This
+document separates the intended system architecture from the evidence currently
+available in public repositories.
 
 ## System intent
 
-IPI connects protocol settlement to independently verifiable digital and
-physical commerce. A user should be able to hold a key, sign through a wallet
-or terminal, verify the network through a node they choose, and verify product
-or receipt claims without trusting one project-operated web service.
+IPI connects protocol settlement, user-controlled signing, open query
+interfaces, independent operation, and verifiable digital or physical commerce.
+No hosted explorer, wallet, API, issuer, terminal, or project account should
+silently become the only source of truth.
 
-## Target layers
+## Layered system map
 
-~~~text
+```text
 People and independent operators
-        |
-        | sign, query, verify, operate
-        v
-Wallets · Terminal · Explorer · Node CLI · External applications
-        |
-        | RPC · REST · gRPC · EVM JSON-RPC · events
-        v
-Protocol and application state
-Accounts · Settlement · EVM · CosmWasm · Products · Chips · Checkout
-        |
-        | deterministic state transitions
-        v
-Cosmos SDK · CometBFT consensus · storage · peer-to-peer network
-        |
-        +---------------- IBC and explicitly modeled external verification
+        │ sign · query · verify · deploy · recover
+        ▼
+Wallet · Terminal · Explorer · Node CLI · External applications
+        │ RPC · REST · gRPC · EVM JSON-RPC · events
+        ▼
+Accounts · Settlement · EVM compatibility · CosmWasm contracts
+        │ deterministic state and explicit trust boundaries
+        ▼
+Cosmos SDK · CometBFT · peer-to-peer network · storage
+        │
+        ├── IBC and separately specified external verification
+        └── optional services: indexer · faucet · monitoring · routing
 
-Optional services: indexer · faucet · monitoring · attestation verifier
-                   anchoring · notification and routing adapters
-~~~
+Product identity · chip attestation · checkout · payment · receipt
+        connect through specified application interfaces;
+        they are not implemented consensus claims merely because they appear here.
+```
 
-Optional services must not silently become the only verification path. Their
-outputs should be derivable from, authenticated by, or explicitly separated
-from protocol state.
+The intended end-to-end path can be summarized as:
+
+```text
+Protocol / Node → RPC/API → Wallet / Explorer
+→ Product Identity / Secure Element → Checkout / Payment → Verification
+```
+
+These components belong to one system because each layer carries evidence to
+the next: consensus produces state, open APIs expose it, wallets authorize
+changes, explorers let independent readers inspect results, product and chip
+interfaces bind external events to explicit attestations, and checkout/receipt
+flows turn those attestations and settlements into independently checkable
+records. A hosted service may improve convenience, but it must not become the
+only place where that chain of evidence can be reproduced.
+
+## Current public implementation map
+
+| Layer | Public source evidence | Current classification |
+| --- | --- | --- |
+| Protocol/node | [`independency-daemon`](https://github.com/ipicoin/independency-daemon) | `wasmd` tracking foundation; no IPI consensus/application changes |
+| Network metadata | [`chainconfig`](https://github.com/ipicoin/chainconfig) | Tested legacy wallet configuration; not canonical current network identity |
+| RPC/API clients | [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc) | Upstream-derived gRPC-Web/gRPC-Gateway comparison and generated TypeScript clients |
+| Explorer | [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io) | Implemented native Cosmos and EVM query interface; public CI passes |
+| Wallet model layer | [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) | Models and Bech32 validation tested; signing and transfer operations incomplete |
+| Mobile client | [`protocolix`](https://github.com/ipicoin/protocolix) | Capacitor Android/iOS scaffold; wallet behavior absent |
+| Governance/security | [`.github`](https://github.com/ipicoin/.github) | Public process, policies, architecture, roadmap, and automated validation |
+| Independent deployment | [`hq-spacecraft`](https://github.com/ipicoin/hq-spacecraft) | Research scaffold; most Compose definitions are placeholders |
+| Product/chip identity | Architecture and upstream secure-hardware reference forks | Research direction; no IPI-specific public implementation |
+| Checkout/payment/receipt | Roadmap and upstream terminal concept forks | Concept stage; no executable public IPI integration |
+
+This table is limited to public evidence. Private, local, or hosted behavior is
+not promoted to an implementation claim here.
 
 ## Component boundaries
 
-### Protocol node
+### Protocol node and validator operation
 
-The node is responsible for deterministic validation and state transitions.
-The engineering baseline combines Cosmos SDK and CometBFT with EVM and
-CosmWasm execution. Consensus-critical dependencies, activation, genesis, and
-upgrades require versioned specifications and compatibility tests.
+The node validates deterministic state transitions and participates in
+consensus. The public research foundation is CosmWasm `wasmd`, which supplies
+Cosmos SDK, CometBFT, IBC, and CosmWasm capabilities upstream. An IPI node
+release still needs explicit IPI modules and parameters, canonical genesis
+binding, upgrade and recovery procedures, validator/sentry topology, versioned
+artifacts, and compatibility tests.
+
+### RPC, APIs, explorer, and indexers
+
+RPC, REST, gRPC, EVM JSON-RPC, events, and indexers expose protocol data; they do
+not define canonical state. Responses should include enough network identity,
+height, and provenance for a caller to repeat important queries through another
+provider or a local node.
+
+The public explorer implements direct CometBFT/Cosmos and EVM query paths. The
+RPC research client compares two generated Cosmos transports. Neither is a
+substitute for authenticated state verification by a node.
 
 ### Accounts, keys, and wallets
 
-Users control signing authority. Wallets must verify network identity, show the
-action being authorized, and avoid depending on a single project RPC. Native
-secp256k1 and P-256/R1 paths must have explicit compatibility and hardware
-threat models.
+Users control signing authority. Wallets must verify network identity, display
+the exact action being authorized, protect recovery material, and support
+provider replacement. The public JavaScript wallet repository currently proves
+only its model/configuration tests and Bech32 validation; transaction signing,
+fees, endpoint verification, recovery, and release security remain unfinished.
+
+P-256/R1, WebAuthn, NFC, and secure-element paths require separate compatibility
+and hardware threat models. Reference forks are research inputs, not IPI
+implementations or security attestations.
 
 ### Products, chips, and attestations
 
-Public state can record identifiers, issuers, bindings, lifecycle, and
-revocation. Symmetric chip secrets and private business or personal data must
-not be published on-chain. Secure-chip verification belongs behind a specified
-attestation boundary with replay protection, issuer rotation, and failure
-handling.
+The intended application layer may record product identifiers, issuers,
+bindings, lifecycle events, and revocation. Symmetric chip secrets and private
+business or personal data must remain off-chain. Secure-chip verification
+belongs behind a specified attestation boundary with replay protection, issuer
+rotation, privacy analysis, and failure handling.
 
-### Checkout and receipts
+No IPI-specific product or secure-element implementation is currently public.
 
-Checkout is a deterministic application flow, not a second source of monetary
-truth. Cart, pricing, authorization, settlement, and receipt state transitions
-must be separately testable. Terminals must continue to provide a safe,
-explainable result when the network or an optional service is unavailable.
+### Checkout, payment, and receipts
 
-### Explorers, indexers, and public APIs
+Checkout should be a deterministic application flow around explicit cart,
+pricing, authorization, settlement, and receipt states. A terminal must provide
+safe, explainable degraded behavior when a network or optional service is
+unavailable.
 
-These components make authenticated protocol data usable; they do not define
-canonical state. Responses should expose network identity, height, provenance,
-and enough information to repeat important queries against another provider or
-local node.
+Current public terminal/payment forks are concept or hardware scaffolds and do
+not implement this IPI flow.
 
-### Interoperability and anchoring
+### Interoperability and external systems
 
-IBC, anchoring, bridges, wrapped assets, routing, custody, and external oracles
-introduce different trust boundaries. Each integration needs its own IPI,
-threat model, accounting invariants, key-holder disclosure, independent
-verification method, and shutdown or migration path.
+IBC, anchoring, bridges, wrapped assets, routing, custody, AMMs, external
+storage, and oracles introduce independent trust boundaries. Each integration
+requires a versioned specification, threat model, accounting invariants,
+key-holder disclosure, verification method, and shutdown or migration path.
+An upstream reference fork does not establish an IPI integration.
 
-## Current maturity
+## Upstream foundation and IPI-specific work
 
-| Capability | Current evidence | Public milestone |
-| --- | --- | --- |
-| Cosmos SDK / CometBFT node | Active integration baseline has built and produced blocks | Consolidated source and reproducible public build |
-| EVM execution | Native value transfer and a demonstration contract have been exercised | Published compatibility tests and release artifacts |
-| CosmWasm execution | A demonstration contract has been uploaded and executed | Published compatibility matrix and deterministic test suite |
-| Wallet, explorer, faucet, status | Testnet-facing implementations exist | Versioned source, threat models, and independent deployment |
-| Terminal and ordinary NFC checkout | Local application flow and physical tag tests exist | Public source, reproducible build, and end-to-end protocol integration |
-| Product and secure-chip identity | Separate experimental work exists | Reviewed specifications, test vectors, and integrated module |
-| IBC interoperability | Part of the protocol direction | Public end-to-end compatibility evidence |
-| Bitcoin anchoring, wrapping, and routing | Planned research | Separate accepted IPIs before production implementation |
+Using Cosmos SDK, CometBFT, CosmWasm, Ethereum tooling, and other established
+open-source components provides interoperable foundations and reviewable
+history. IPI preserves their licenses and does not claim their code as original.
 
-Evidence from a private or local integration is useful engineering input but not
-a public release. The [roadmap](ROADMAP.md) defines the gates for changing these
-labels.
+The public organization audit found:
+
+- 26 public forks with zero commits ahead of upstream;
+- one tracking fork, `independency-daemon`, with two IPI commits limited to
+  provenance and CI hardening; and
+- original IPI work concentrated in the explorer, wallet model/tests,
+  governance and architecture, website, configuration, and integration
+  research repositories.
+
+See [`REPOSITORY_AUDIT.md`](REPOSITORY_AUDIT.md) for the per-repository evidence.
 
 ## Design rules
 
@@ -113,13 +157,16 @@ labels.
    secrets or unnecessary personal and commercial data.
 5. **Treat interoperability as a new trust model.** A connection does not inherit
    the security or independence of either side automatically.
-6. **Prefer replaceable services.** Hosted convenience must have an independent
+6. **Prefer replaceable services.** Hosted convenience needs an independent
    provider or local-operation path.
-7. **Design the exit before the launch.** Recovery, migration, shutdown, and
+7. **Design the exit before launch.** Recovery, migration, shutdown, and
    continuity are protocol requirements.
+8. **Label evidence precisely.** Implemented, inherited, generated, configured,
+   tested, hosted, and planned are different claims.
 
 ## Change control
 
 Material changes to these boundaries require an
-[IPI Improvement Proposal](ipi/README.md). An implementation pull request must
-link the proposal and cannot silently redefine its normative behavior.
+[IPI Improvement Proposal](ipi/README.md). Implementation work may precede an
+accepted proposal, but it must not silently redefine normative behavior or
+claim maturity unsupported by public evidence.

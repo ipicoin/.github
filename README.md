@@ -15,6 +15,7 @@ Repository-specific instructions always take precedence.
 | --- | --- |
 | [Organization profile](profile/README.md) | Public mission, project map, and entry points |
 | [Architecture](ARCHITECTURE.md) | Target layers, trust boundaries, and current maturity |
+| [Public repository audit](REPOSITORY_AUDIT.md) | Per-repository source, provenance, functionality, and evidence assessment |
 | [Contributing](CONTRIBUTING.md) | How to discuss, build, test, and submit changes |
 | [Code of Conduct](CODE_OF_CONDUCT.md) | Expected community behavior |
 | [Security](SECURITY.md) | Private vulnerability reporting |
