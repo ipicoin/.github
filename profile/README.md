@@ -1,46 +1,60 @@
 # IPI — Independent Protocol Infrastructure
 
-**A multi-layer protocol infrastructure program connecting network state, open
-APIs, self-custody clients, independent verification, and physical/digital
-commerce research.**
+**A public, multi-layer protocol infrastructure ecosystem connecting network
+state, open APIs, self-custody clients, independent verification, governance,
+and physical/digital commerce integration.**
 
-IPI is not organized as a token-only repository or a single web application.
-Its architecture and public work are organized across blockchain and network
-foundations, wallet and key infrastructure, a block explorer, RPC client
-research, node and validator integration, EVM and CosmWasm integration
-directions, governance and security processes, product-identity and
-secure-element research, checkout/payment concepts, and independently operable
-infrastructure.
+IPI organizes public engineering across blockchain and network foundations,
+wallet and key infrastructure, a block explorer, RPC clients, node and validator
+integration, EVM and CosmWasm interfaces, governance and security processes,
+product identity and secure-element research, checkout/payment architecture,
+and independently operable infrastructure. Together these layers define a path
+from protocol state to user authorization, external-product verification, and
+independently checkable outcomes.
 
-The public repositories contain different levels of evidence across those
-layers. The strongest implemented components are linked first below; integration
+Start with the implemented and tested components below. Every primary capability
+links directly to its code, tests, or governing technical document; integration
 and research work is labeled separately.
 
 ## What Exists Today
 
 - **A zero-dependency Cosmos/EVM testnet explorer.**
-  [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io) implements block,
-  transaction, account, validator, native Cosmos, and EVM JSON-RPC inspection in
-  browser JavaScript, with same-origin API routing and passing public CI.
+  [`explorer.js`](https://github.com/ipicoin/scan.ipi.io/blob/main/explorer.js)
+  implements block, transaction, account, validator, native Cosmos, and EVM
+  JSON-RPC inspection in browser JavaScript. The repository also contains a
+  [local API proxy](https://github.com/ipicoin/scan.ipi.io/blob/main/dev-server.mjs),
+  a dedicated [EVM diagnostic view](https://github.com/ipicoin/scan.ipi.io/blob/main/evm.html),
+  and passing public CI.
 - **A tested JavaScript wallet model layer.**
-  [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) contains wallet,
-  address, request, transaction, and contract models plus Bech32 validation.
-  Eleven model/configuration tests pass; signing and transfer operations remain
+  [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) contains
+  [wallet, address, request, transaction, and contract models](https://github.com/ipicoin/wallet-core.js/tree/main/src/models)
+  plus configurable Bech32 validation. Its
+  [seven test files](https://github.com/ipicoin/wallet-core.js/tree/main/tests)
+  contain eleven passing tests; signing and transfer operations remain
   incomplete.
 - **Cosmos RPC transport and client-generation research.**
-  [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc) contains protobuf inputs,
-  generated TypeScript clients, and comparison pages for gRPC-Web and
-  gRPC-Gateway. It is an upstream-derived integration sandbox, not an RPC server.
+  [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc) contains
+  [Cosmos, IBC, Tendermint, and CosmWasm protobuf inputs](https://github.com/ipicoin/ipi-rpc/tree/main/proto),
+  generated TypeScript clients for
+  [gRPC-Web](https://github.com/ipicoin/ipi-rpc/tree/main/codegen_grpc_web) and
+  [gRPC-Gateway](https://github.com/ipicoin/ipi-rpc/tree/main/codegen_grpc_gateway),
+  and browser comparison pages. It is an upstream-derived integration sandbox,
+  not an RPC server.
 - **A public protocol-change and governance process.**
-  [`.github`](https://github.com/ipicoin/.github) contains the architecture,
-  security policy, governance rules, contribution standards, roadmap, and the
-  IPI Improvement Proposal process. IPI-0000 defines the process; IPI-0001 is a
-  draft evidence model for verifiable independence.
+  [`.github`](https://github.com/ipicoin/.github) contains the
+  [architecture](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md),
+  [security policy](https://github.com/ipicoin/.github/blob/main/SECURITY.md),
+  [governance rules](https://github.com/ipicoin/.github/blob/main/GOVERNANCE.md),
+  roadmap, and IPI Improvement Proposal process.
+  [IPI-0000](https://github.com/ipicoin/.github/blob/main/ipi/IPI-0000.md)
+  defines the process; [IPI-0001](https://github.com/ipicoin/.github/blob/main/ipi/IPI-0001.md)
+  is a draft evidence model for verifiable independence.
 - **A public node foundation with explicit provenance.**
   [`independency-daemon`](https://github.com/ipicoin/independency-daemon) tracks
   CosmWasm `wasmd`, built on Cosmos SDK and CometBFT. Current IPI changes are
   provenance documentation and CI hardening; an IPI node release is not yet
-  implemented in that fork.
+  implemented in that fork. The exact boundary is recorded in
+  [`IPI_FORK_STATUS.md`](https://github.com/ipicoin/independency-daemon/blob/main/IPI_FORK_STATUS.md).
 - **Public product and documentation surfaces.**
   [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io) is the Astro source for
   the website and documentation, while
@@ -80,21 +94,40 @@ research directions without a public IPI implementation. See the
 
 ## Engineering Evidence
 
-| Area | Public evidence | Status |
-| --- | --- | --- |
-| Explorer and verification UI | [`scan.ipi.io`](https://github.com/ipicoin/scan.ipi.io) | Active development; native Cosmos and EVM query paths implemented |
-| Wallet and account models | [`wallet-core.js`](https://github.com/ipicoin/wallet-core.js) | Active development; model tests pass, signing/transfer incomplete |
-| RPC/API clients | [`ipi-rpc`](https://github.com/ipicoin/ipi-rpc) | Integration research; upstream-derived generated-client comparison |
-| Protocol/network foundation | [`independency-daemon`](https://github.com/ipicoin/independency-daemon) | Upstream foundation with IPI integration in progress |
-| Mobile client | [`protocolix`](https://github.com/ipicoin/protocolix) | Capacitor Android/iOS scaffold; wallet logic not implemented |
-| Network metadata | [`chainconfig`](https://github.com/ipicoin/chainconfig) | Tested legacy configuration; not canonical current identity |
-| Governance and security | [`.github`](https://github.com/ipicoin/.github) | Active bootstrap process with automated document validation |
-| Website and documentation | [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io) | Active development; Astro static build |
-| Independent infrastructure | [`hq-spacecraft`](https://github.com/ipicoin/hq-spacecraft) | Prototype scaffold; most service compositions are placeholders |
-| Product identity / secure element | [architecture](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md), [`node-ntag424` reference fork](https://github.com/ipicoin/nikeee___node-ntag424) | Research direction; no IPI-specific implementation |
-| Checkout / payment / receipt | [roadmap](https://github.com/ipicoin/.github/blob/main/ROADMAP.md), [`cheer-gear` reference fork](https://github.com/ipicoin/cheer-gear) | Concept and hardware scaffold; no executable IPI integration |
+| Layer | What exists | Evidence | Status |
+| --- | --- | --- | --- |
+| Explorer | Native blocks, transactions, accounts, validators, search, and EVM diagnostics | [`explorer.js`](https://github.com/ipicoin/scan.ipi.io/blob/main/explorer.js) | Active development; implemented and publicly tested |
+| EVM interface | JSON-RPC transaction, block, address, balance, nonce, and bytecode inspection | [`explorer.js`](https://github.com/ipicoin/scan.ipi.io/blob/main/explorer.js), [`evm.html`](https://github.com/ipicoin/scan.ipi.io/blob/main/evm.html) | Query integration demonstrated; IPI EVM execution suite not public |
+| CosmWasm interface | Protobuf/query client surface plus inherited `wasmd` execution foundation | [`ipi-rpc` CosmWasm clients](https://github.com/ipicoin/ipi-rpc/tree/main/codegen_grpc_web/cosmwasm), [`independency-daemon`](https://github.com/ipicoin/independency-daemon) | Upstream foundation and client integration research; IPI execution suite not public |
+| Wallet core | Wallet, address, request, transaction, and contract models; Bech32 validation | [`src/models`](https://github.com/ipicoin/wallet-core.js/tree/main/src/models), [`tests`](https://github.com/ipicoin/wallet-core.js/tree/main/tests) | Active development; eleven tests pass, signing/transfer incomplete |
+| RPC/API clients | Cosmos/IBC/CosmWasm protobuf inputs and two generated TypeScript transport trees | [`proto`](https://github.com/ipicoin/ipi-rpc/tree/main/proto), [`gRPC-Web`](https://github.com/ipicoin/ipi-rpc/tree/main/codegen_grpc_web), [`gRPC-Gateway`](https://github.com/ipicoin/ipi-rpc/tree/main/codegen_grpc_gateway) | Integration research; upstream-derived, no IPI endpoint binding |
+| Protocol/node | Buildable Cosmos SDK, CometBFT, IBC, and CosmWasm application foundation | [`independency-daemon`](https://github.com/ipicoin/independency-daemon), [fork boundary](https://github.com/ipicoin/independency-daemon/blob/main/IPI_FORK_STATUS.md) | Upstream foundation; IPI consensus/application delta not public |
+| Mobile client | Capacitor Android/iOS project trees and browser shell | [`protocolix`](https://github.com/ipicoin/protocolix) | Prototype scaffold; wallet behavior not implemented |
+| Network metadata | Tested historical Cosmos wallet configuration | [`config.json`](https://github.com/ipicoin/chainconfig/blob/main/config.json), [`test/config.test.js`](https://github.com/ipicoin/chainconfig/blob/main/test/config.test.js) | Verified legacy record; not canonical current identity |
+| Governance/security | Architecture, security policy, public change control, and automated document validation | [`.github`](https://github.com/ipicoin/.github), [IPI proposals](https://github.com/ipicoin/.github/tree/main/ipi) | Active public bootstrap process |
+| Website/docs | Astro landing and Starlight documentation source | [`www.ipi.io`](https://github.com/ipicoin/www.ipi.io) | Active development; public build CI passes |
+| Independent infrastructure | Self-hosted service and Compose research structure | [`hq-spacecraft`](https://github.com/ipicoin/hq-spacecraft) | Prototype scaffold; most compositions are placeholders |
+| Product identity / secure element | Architecture boundary and attributed NTAG 424 reference | [architecture](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md), [`node-ntag424` reference](https://github.com/ipicoin/nikeee___node-ntag424) | Research direction; no IPI-specific implementation |
+| Checkout/payment/receipt | Roadmap boundary and attributed terminal hardware scaffold | [roadmap](https://github.com/ipicoin/.github/blob/main/ROADMAP.md), [`cheer-gear` reference](https://github.com/ipicoin/cheer-gear) | Concept stage; no executable IPI integration |
 
-## Why IPI Is Different
+## Why This Is Not Just a Token Project
+
+The distinction is architectural and verifiable in source. A token-only project
+can stop at an asset definition, marketing site, and third-party wallet link.
+IPI's public organization separately exposes:
+
+- a native Cosmos and EVM inspection surface;
+- wallet/account models and validation tests;
+- protobuf inputs and generated RPC client transports;
+- an attributed node/execution foundation;
+- public governance, security, architecture, and change control;
+- independently operable infrastructure research; and
+- explicit hardware identity, product verification, and payment boundaries.
+
+These layers are not equally mature, but they form one protocol-infrastructure
+architecture rather than a website wrapped around a token contract.
+
+## Engineering Thesis
 
 IPI's engineering thesis is that infrastructure should be inspectable and
 replaceable at every layer:
@@ -132,6 +165,20 @@ fork provenance and CI hardening. These forks are research references and must
 not be read as IPI-authored implementations. IPI-specific public evidence lives
 in the explorer, wallet model/test work, governance and architecture,
 configuration, documentation, and integration boundaries described above.
+
+## Project Scope and Continuity
+
+IPI development is broader than the history of a single daemon repository. Its
+public record is distributed across protocol-foundation evaluation, explorer
+implementation, wallet models, RPC clients, network configuration, governance,
+security, independent-infrastructure research, and hardware/product/payment
+architecture. Some repositories were imported, rebuilt, or created at different
+stages and therefore have different histories.
+
+This is not a claim that IPI spent four continuous years writing a blockchain
+core from zero. It is the narrower, verifiable claim that IPI is being developed
+as a multi-component system, and that repository age or inherited history must
+not be substituted for evidence of IPI-specific work.
 
 ## Development Status
 

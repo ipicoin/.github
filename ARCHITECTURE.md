@@ -40,6 +40,14 @@ Protocol / Node → RPC/API → Wallet / Explorer
 → Product Identity / Secure Element → Checkout / Payment → Verification
 ```
 
+These components belong to one system because each layer carries evidence to
+the next: consensus produces state, open APIs expose it, wallets authorize
+changes, explorers let independent readers inspect results, product and chip
+interfaces bind external events to explicit attestations, and checkout/receipt
+flows turn those attestations and settlements into independently checkable
+records. A hosted service may improve convenience, but it must not become the
+only place where that chain of evidence can be reproduced.
+
 ## Current public implementation map
 
 | Layer | Public source evidence | Current classification |

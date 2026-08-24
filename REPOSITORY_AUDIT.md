@@ -125,6 +125,27 @@ The corrective hierarchy is:
 5. keep missing public implementations visible in one development-status
    section rather than repeating generic disclaimers above every capability.
 
+## External-reader stress test
+
+- **Senior blockchain engineer:** can verify original explorer behavior, tested
+  wallet models, generated RPC surfaces, and public change control, while still
+  identifying the IPI-specific node and release process as the primary gap.
+- **Technical infrastructure investor:** can see a coherent thesis connecting
+  protocol state, self-custody clients, independent verification, open
+  interfaces, and hardware/product/payment boundaries; execution maturity is
+  uneven, but the scope is materially broader than an asset and website.
+- **Skeptical provenance reviewer:** can verify that most forks are unchanged
+  upstream references and that IPI does not claim their authorship. The same
+  reviewer cannot accurately reduce the organization to a renamed fork without
+  ignoring the original explorer, wallet model/tests, governance, configuration,
+  website, and integration work.
+
+The strongest defensible negative conclusion after this presentation pass is
+that IPI is an incomplete infrastructure ecosystem without a public
+IPI-specific node release—not that it is merely a token, website, or renamed
+fork. Removing that remaining criticism requires new engineering evidence, not
+different wording.
+
 ## Recommended organization pins
 
 GitHub does not expose organization-profile pin management through the API used
