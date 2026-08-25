@@ -166,7 +166,7 @@ the evidence required before stronger maturity claims.
 
 [Explorer](https://github.com/ipicoin/scan.ipi.io) ·
 [Architecture](https://github.com/ipicoin/.github/blob/main/ARCHITECTURE.md) ·
-[Repository audit](../REPOSITORY_AUDIT.md) ·
+[Repository audit](https://github.com/ipicoin/.github/blob/main/REPOSITORY_AUDIT.md) ·
 [Governance](https://github.com/ipicoin/.github/blob/main/GOVERNANCE.md) ·
 [IPI proposals](https://github.com/ipicoin/.github/tree/main/ipi) ·
 [Roadmap](https://github.com/ipicoin/.github/blob/main/ROADMAP.md) ·
